@@ -1,4 +1,4 @@
-import { Add, Flash, Logout, MessageText1, Trash } from "iconsax-react";
+import { Add, Flash, Logout, MessageText1 } from "iconsax-react";
 
 const Sidebar = () => {
   return (
