@@ -8,7 +8,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-const page = () => {
+const Page = () => {
   const { sidebarOpen, toggleSidebar } = useSidebarCtx();
 
   return (
@@ -69,4 +69,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
