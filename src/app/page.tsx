@@ -1,7 +1,12 @@
-"use client"
+"use client";
 
 import { useSidebarCtx } from "@/contexts/SidebarCtx";
-import { Flash, HambergerMenu, Send } from "iconsax-react";
+import { ArrowDown2, Flash, HambergerMenu, Send } from "iconsax-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 const page = () => {
   const { sidebarOpen, toggleSidebar } = useSidebarCtx();
@@ -21,7 +26,26 @@ const page = () => {
           }}
         />
       </div>
-      <div className="bg-gradient-to-br from-primary/35 to-secondary/35 w-full h-full rounded-lg flex flex-col items-center justify-center">
+
+      <div className="relative bg-gradient-to-br from-primary/35 to-secondary/35 w-full h-full rounded-lg flex flex-col items-center justify-center">
+        <div className="absolute top-3 left-5">
+          <Popover>
+            <PopoverTrigger className="bg-primary text-white p-3 flex items-center rounded-md gap-2">
+              <p>Model</p>
+              <ArrowDown2 size="26" color="#FFF"/>
+            </PopoverTrigger>
+            <PopoverContent className="bg-primary border-black">
+              <ul>
+                <li className="text-white p-3 rounded-md hover:bg-[#424242] cursor-pointer">Nous Theta 8B</li>
+                <li className="text-white p-3 rounded-md hover:bg-[#424242] cursor-pointer">Nous Theta 8B</li>
+                <li className="text-white p-3 rounded-md hover:bg-[#424242] cursor-pointer">Nous Theta 8B</li>
+                <li className="text-white p-3 rounded-md hover:bg-[#424242] cursor-pointer">Nous Theta 8B</li>
+                <li className="text-white p-3 rounded-md hover:bg-[#424242] cursor-pointer">Nous Theta 8B</li>
+              </ul>
+            </PopoverContent>
+          </Popover>
+        </div>
+
         <h1 className="text-3xl md:text-5xl text-white font-semibold">
           Welcome to Polyglot
         </h1>
