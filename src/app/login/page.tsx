@@ -66,7 +66,7 @@ const Page = () => {
       const error = err as AxiosError;
 
       if (error.status === 500 || 401) {
-        //@ts-expect-error
+        //@ts-expect-error neccessary
         toast.error(error.response?.data.error);
       }
     } finally {
@@ -124,7 +124,7 @@ const Page = () => {
           </form>
         </div>
         <p className="mt-3 text-white">
-          Don't have an account?
+          Don&apos;t have an account?
           <Link href="/register" className="text-secondary">
             Register
           </Link>

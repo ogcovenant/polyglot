@@ -71,7 +71,7 @@ const Page = () => {
     } catch (err) {
       const error = err as AxiosError;
 
-      //@ts-expect-error
+      //@ts-expect-error neccessary
       toast.error(error.response?.data.error);
     } finally {
       setLoading(false);
