@@ -11,6 +11,12 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+type formData = {
+  email: string;
+  password: string;
+  cPassword: string;
+}
+
 const Page = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter() 
@@ -26,7 +32,8 @@ const Page = () => {
       .min(8, "Password should have a minimum of 8 characters"),
     cPassword: yup
       .string()
-      .oneOf([yup.ref("password")], "Passwords do not match"),
+      .oneOf([yup.ref("password")], "Passwords do not match")
+      .required("Required")
   });
 
   const {
@@ -40,7 +47,7 @@ const Page = () => {
 
   const setUser = useUserStore((state) => state.setUser);
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: formData) => {
     setLoading(true);
 
     try {
@@ -64,7 +71,7 @@ const Page = () => {
     } catch (err) {
       const error = err as AxiosError;
 
-      //@ts-ignore
+      //@ts-expect-error
       toast.error(error.response?.data.error);
     } finally {
       setLoading(false);

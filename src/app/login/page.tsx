@@ -11,10 +11,15 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import axios, { AxiosError } from "axios";
 
+type formData = {
+  email: string;
+  password: string;
+};
+
 const Page = () => {
   const [loading, setLoading] = useState(false);
 
-  const router = useRouter()
+  const router = useRouter();
 
   const schema = yup.object({
     email: yup
@@ -38,7 +43,7 @@ const Page = () => {
 
   const setUser = useUserStore((state) => state.setUser);
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: formData) => {
     setLoading(true);
 
     try {
@@ -61,7 +66,7 @@ const Page = () => {
       const error = err as AxiosError;
 
       if (error.status === 500 || 401) {
-        //@ts-ignore
+        //@ts-expect-error
         toast.error(error.response?.data.error);
       }
     } finally {
@@ -119,7 +124,7 @@ const Page = () => {
           </form>
         </div>
         <p className="mt-3 text-white">
-          Don't have an account?{" "}
+          Don't have an account?
           <Link href="/register" className="text-secondary">
             Register
           </Link>
