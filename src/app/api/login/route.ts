@@ -1,16 +1,19 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import db from '@/config/db.config';
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
+import { NextApiRequest, NextApiResponse } from "next";
+import db from "@/config/db.config";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import { NextRequest, NextResponse } from "next/server";
 
-const SECRET_KEY = process.env.JWT_SECRET; // Store this in your .env file
+const SECRET_KEY = process.env.JWT_SECRET;
 
-export default async function POST(req: NextApiRequest, res: NextApiResponse) {
-
-  const { email, password } = req.body;
+export async function POST(req: NextRequest) {
+  const { email, password } = await req.json();
 
   if (!email || !password) {
-    return res.status(400).json({ error: 'Email and password are required' });
+    return NextResponse.json(
+      { error: "Email and password are required" },
+      { status: 400 }
+    );
   }
 
   try {
@@ -20,14 +23,20 @@ export default async function POST(req: NextApiRequest, res: NextApiResponse) {
     });
 
     if (!user) {
-      return res.status(401).json({ error: 'Invalid email or password' });
+      return NextResponse.json(
+        { error: "Invalid email or password" },
+        { status: 401 }
+      );
     }
 
     // Compare passwords
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
-      return res.status(401).json({ error: 'Invalid email or password' });
+      return NextResponse.json(
+        { error: "Invalid email or password" },
+        { status: 401 }
+      );
     }
 
     // Generate a JWT token
@@ -36,22 +45,28 @@ export default async function POST(req: NextApiRequest, res: NextApiResponse) {
         id: user.id,
         email: user.email,
       },
-      SECRET_KEY as string,
+      SECRET_KEY as string
     );
 
     // Respond with the token and user data
-    return res.status(200).json({
-      message: 'Login successful',
-      token,
-      user: {
-        id: user.id,
-        email: user.email,
-        createdAt: user.createdAt
+    return NextResponse.json(
+      {
+        message: "Login successful",
+        token,
+        user: {
+          id: user.id,
+          email: user.email,
+          createdAt: user.createdAt,
+        },
       },
-    });
+      { status: 200 }
+    );
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: 'Internal server error' });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   } finally {
     await db.$disconnect();
   }

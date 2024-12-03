@@ -5,8 +5,17 @@ import Link from "next/link";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
+import { useState } from "react";
+import useUserStore from "@/states/userStore";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import axios, { AxiosError } from "axios";
 
 const page = () => {
+  const [loading, setLoading] = useState(false);
+
+  const router = useRouter()
+
   const schema = yup.object({
     email: yup
       .string()
@@ -27,8 +36,37 @@ const page = () => {
     mode: "all",
   });
 
-  const onSubmit = (data: any) => {
-    console.log(data);
+  const setUser = useUserStore((state) => state.setUser);
+
+  const onSubmit = async (data: any) => {
+    setLoading(true);
+
+    try {
+      const res = await axios.post("/api/login", {
+        email: data.email,
+        password: data.password,
+      });
+
+      if (res.status === 200) {
+        setUser({
+          id: res.data.user.id,
+          email: res.data.user.email,
+          token: res.data.token,
+        });
+
+        toast.success(res.data.message);
+        router.push("/");
+      }
+    } catch (err) {
+      const error = err as AxiosError;
+
+      if (error.status === 500 || 401) {
+        //@ts-ignore
+        toast.error(error.response?.data.error);
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -42,7 +80,10 @@ const page = () => {
           </div>
         </div>
         <div className="mt-5 ">
-          <form className="flex flex-col items-center gap-4" onSubmit={handleSubmit(onSubmit)}>
+          <form
+            className="flex flex-col items-center gap-4"
+            onSubmit={handleSubmit(onSubmit)}
+          >
             <div className="flex flex-col gap-1 w-[90%] md:w-[80%]">
               <label htmlFor="email" className="text-white">
                 Email
@@ -52,9 +93,9 @@ const page = () => {
                 id="email"
                 placeholder="Enter a valid email"
                 className="p-3 outline-none rounded-md text-white bg-black"
-                {...(register("email"))}
+                {...register("email")}
               />
-              <p className="text-red-500 text-sm">{ errors.email?.message }</p>
+              <p className="text-red-500 text-sm">{errors.email?.message}</p>
             </div>
             <div className="flex flex-col gap-1 w-[90%] md:w-[80%]">
               <label htmlFor="password" className="text-white">
@@ -67,13 +108,13 @@ const page = () => {
                 className="p-3 outline-none rounded-md text-white bg-black"
                 {...register("password")}
               />
-              <p className="text-red-500 text-sm">{ errors.password?.message }</p>
+              <p className="text-red-500 text-sm">{errors.password?.message}</p>
             </div>
             <button
               type="submit"
               className="w-[90%] md:w-[80%] bg-secondary text-white font-semibold p-3 rounded-md"
             >
-              Continue
+              {loading ? "Submitting..." : "Continue"}
             </button>
           </form>
         </div>

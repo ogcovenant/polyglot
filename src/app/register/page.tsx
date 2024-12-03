@@ -5,8 +5,16 @@ import Link from "next/link";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
+import axios, { AxiosError } from "axios";
+import useUserStore from "@/states/userStore";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const page = () => {
+  const [loading, setLoading] = useState(false);
+  const router = useRouter() 
+
   const schema = yup.object({
     email: yup
       .string()
@@ -30,8 +38,37 @@ const page = () => {
     mode: "all",
   });
 
-  const onSubmit = (data: any) => {
-    console.log(data);
+  const setUser = useUserStore((state) => state.setUser);
+
+  const onSubmit = async (data: any) => {
+    setLoading(true);
+
+    try {
+      const res = await axios.post("/api/register", {
+        email: data.email,
+        password: data.password,
+      });
+
+      if (res.status === 201) {
+        setLoading(false);
+
+        setUser({
+          id: res.data.user.id,
+          email: res.data.user.email,
+          token: res.data.token,
+        });
+
+        toast.success(res.data.message);
+        router.push("/");
+      }
+    } catch (err) {
+      const error = err as AxiosError;
+
+      //@ts-ignore
+      toast.error(error.response?.data.error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -58,7 +95,7 @@ const page = () => {
                 id="email"
                 placeholder="Enter a valid email"
                 className="p-3 outline-none rounded-md text-white bg-black"
-                {...(register("email"))}
+                {...register("email")}
               />
               <p className="text-red-500 text-sm">{errors.email?.message}</p>
             </div>
@@ -86,13 +123,15 @@ const page = () => {
                 className="p-3 outline-none rounded-md text-white bg-black"
                 {...register("cPassword")}
               />
-              <p className="text-red-500 text-sm">{errors.cPassword?.message}</p>
+              <p className="text-red-500 text-sm">
+                {errors.cPassword?.message}
+              </p>
             </div>
             <button
               type="submit"
               className="w-[90%] bg-secondary text-white font-semibold p-3 rounded-md"
             >
-              Continue
+              {loading ? "Submiting..." : "Continue"}
             </button>
           </form>
         </div>

@@ -1,14 +1,17 @@
-import { NextApiRequest, NextApiResponse } from "next";
 import db from "@/config/db.config";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { NextRequest, NextResponse } from "next/server";
 
-export default async function POST(req: NextApiRequest, res: NextApiResponse) {
+export async function POST(req: NextRequest) {
   const SECRET_KEY = process.env.JWT_SECRET;
-  const { email, password } = req.body;
+  const { email, password } = await req.json();
 
   if (!email || !password) {
-    return res.status(400).json({ error: "All fields are required" });
+    return NextResponse.json(
+      { error: "All fields are required" },
+      { status: 400 }
+    );
   }
 
   try {
@@ -18,7 +21,10 @@ export default async function POST(req: NextApiRequest, res: NextApiResponse) {
     });
 
     if (existingUser) {
-      return res.status(400).json({ error: "Email is already registered" });
+      return NextResponse.json(
+        { error: "Email is already registered" },
+        { status: 400 }
+      );
     }
 
     // Hash the password
@@ -41,18 +47,24 @@ export default async function POST(req: NextApiRequest, res: NextApiResponse) {
     );
 
     // Respond with the created user (excluding the password)
-    return res.status(201).json({
-      message: "User Created Successfully",
-      token,
-      user: {
-        id: user.id,
-        email: user.email,
-        createdAt: user.createdAt,
+    return NextResponse.json(
+      {
+        message: "User Created Successfully",
+        token,
+        user: {
+          id: user.id,
+          email: user.email,
+          createdAt: user.createdAt,
+        },
       },
-    });
+      { status: 201 }
+    );
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: "Internal server error" });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   } finally {
     await db.$disconnect();
   }

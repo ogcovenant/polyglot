@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { SidebarCtx } from "@/contexts/SidebarCtx";
+import { Toaster } from "react-hot-toast"
 
 const spaceGrotesk = localFont({
   src: "./fonts/SpaceGrotesk.ttf",
@@ -22,6 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${spaceGrotesk.variable} antialiased`}>
+        <Toaster />
         <SidebarCtx>{children}</SidebarCtx>
       </body>
     </html>
