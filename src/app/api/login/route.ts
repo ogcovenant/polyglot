@@ -1,4 +1,3 @@
-import { NextApiRequest, NextApiResponse } from "next";
 import db from "@/config/db.config";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";

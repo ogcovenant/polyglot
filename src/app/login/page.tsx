@@ -11,7 +11,7 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import axios, { AxiosError } from "axios";
 
-const page = () => {
+const Page = () => {
   const [loading, setLoading] = useState(false);
 
   const router = useRouter()
@@ -129,4 +129,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
