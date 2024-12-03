@@ -7,9 +7,34 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useEffect, useState} from "react";
+import { getModels } from "@/actions/models";
+import { chat } from "@/actions/chat";
+import { venice } from "@/utils/venice.utils";
 
 const Page = () => {
   const { sidebarOpen, toggleSidebar } = useSidebarCtx();
+  const [models, setModels] = useState([]);
+  const [currentModel, setCurrentModel] = useState("")
+  const [chatInput, setChatInput] = useState("")
+
+  useEffect(() => {
+    (async () => {
+      const res = await getModels();
+      setModels(res.filter((model: any) => model.type === "text"));
+    })();
+  }, []); 
+
+  useEffect(() => {
+    console.log(models);
+  }, [models]);
+
+  const startChat = async(message: string) => {
+    console.log(currentModel, venice.apiKey, venice.baseUrl)
+    const completion = await chat(message, currentModel)
+
+    console.log(completion)
+  }
 
   return (
     <div className="bg-black h-full p-2">
@@ -32,15 +57,17 @@ const Page = () => {
           <Popover>
             <PopoverTrigger className="bg-primary text-white p-3 flex items-center rounded-md gap-2">
               <p>Model</p>
-              <ArrowDown2 size="26" color="#FFF"/>
+              <ArrowDown2 size="26" color="#FFF" />
             </PopoverTrigger>
             <PopoverContent className="bg-primary border-black">
               <ul>
-                <li className="text-white p-3 rounded-md hover:bg-[#424242] cursor-pointer">Nous Theta 8B</li>
-                <li className="text-white p-3 rounded-md hover:bg-[#424242] cursor-pointer">Nous Theta 8B</li>
-                <li className="text-white p-3 rounded-md hover:bg-[#424242] cursor-pointer">Nous Theta 8B</li>
-                <li className="text-white p-3 rounded-md hover:bg-[#424242] cursor-pointer">Nous Theta 8B</li>
-                <li className="text-white p-3 rounded-md hover:bg-[#424242] cursor-pointer">Nous Theta 8B</li>
+                {models.map((model) => (
+                  // @ts-ignore
+                  <li className="text-white p-3 rounded-md hover:bg-[#424242] cursor-pointer" key={model.id} onClick={() => setCurrentModel(model.id)}>
+                    {/* @ts-ignore */}
+                    {model.id}
+                  </li>
+                ))}
               </ul>
             </PopoverContent>
           </Popover>
@@ -59,8 +86,10 @@ const Page = () => {
             id="prompt"
             className="bg-transparent p-2 w-[80%] md:w-[90%] outline-none text-white"
             placeholder="What do you need help with"
+            value={chatInput}
+            onChange={(e) => setChatInput(e.target.value)}
           />
-          <button className="w-[20%] md:w-[10%] bg-secondary flex justify-center rounded-lg p-2">
+          <button className="w-[20%] md:w-[10%] bg-secondary flex justify-center rounded-lg p-2" onClick={() => startChat(chatInput)}>
             <Send size="26" color="#FFF" />
           </button>
         </div>
