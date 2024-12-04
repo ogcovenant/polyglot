@@ -1,7 +1,7 @@
 "use client";
 
 import { useSidebarCtx } from "@/contexts/SidebarCtx";
-import { ArrowDown2, Flash, HambergerMenu, Send } from "iconsax-react";
+import { ArrowDown2, Flash, HambergerMenu } from "iconsax-react";
 import {
   Popover,
   PopoverContent,
@@ -57,11 +57,9 @@ const Page = () => {
 
       console.log(completion)
 
-      //@ts-ignore
+      //@ts-expect-error error
       setChats((prevChats) => [
-        //@ts-ignore
         ...prevChats,
-        //@ts-ignore
         { message, reply: completion.content },
       ]);
 
@@ -103,15 +101,15 @@ const Page = () => {
                 {models.map((model) => (
                   <li
                     className="text-white p-3 rounded-md hover:bg-[#424242] cursor-pointer"
-                    //@ts-ignore
+                    //@ts-expect-error error
                     key={model.id}
                     onClick={() => {
-                      //@ts-ignore
+                      //@ts-expect-error error
                       setCurrentModel(model.id);
                       setChooseModel(false);
                     }}
                   >
-                    {/* @ts-ignore */}
+                    {/* @ts-expect-error error */}
                     {model.id}
                   </li>
                 ))}

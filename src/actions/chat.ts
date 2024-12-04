@@ -31,6 +31,6 @@ export async function chat(message: string, model: string) {
 
     return completion.choices[0].message
   } catch (err) {
-    throw new Error("An Unexpected Error Occured")
+    throw new Error("An Unexpected Error Occured", err as ErrorOptions)
   }
 }
