@@ -83,7 +83,7 @@ const Page = () => {
   element?.scrollIntoView({
     behavior: 'smooth'
   }); 
-    }
+    
       // setChats((prevChats) => [
       //   ...prevChats,
       //   { message, reply: completion.content },
