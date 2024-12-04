@@ -15,16 +15,16 @@ interface ChatStore {
 const useChatStore = create<ChatStore>()(
   persist(
     (set) => ({
-      chats: JSON.parse(localStorage.getItem("chats") || "[]"), // Initialize from local storage
+      chats: [], // Initialize from local storage
       addChat: (chat) => {
         set((state) => {
           const updatedChats = [...state.chats, chat];
-          localStorage.setItem("chats", JSON.stringify(updatedChats)); // Save to local storage
+        //   localStorage.setItem("chats", JSON.stringify(updatedChats)); // Save to local storage
           return { chats: updatedChats };
         });
       },
       clearChats: () => {
-        localStorage.removeItem("chats"); // Clear local storage
+        // localStorage.removeItem("chats"); // Clear local storage
         set({ chats: [] });
       },
     }),
