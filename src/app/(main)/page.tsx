@@ -111,7 +111,7 @@ const Page = () => {
                       setChooseModel(false);
                     }}
                   >
-                    //@ts-ignore
+                    {/* @ts-ignore */}
                     {model.id}
                   </li>
                 ))}
@@ -137,7 +137,8 @@ const Page = () => {
             />
           </div>
         ) : (
-          <div className="w-full h-full overflow-auto bg-black p-5 rounded-md mt-24">
+          <div className="w-full h-full overflow-auto bg-black p-5 rounded-md">
+            <div className="mt-24"></div>
             {chats.map((chat, index) => (
               <ChatMessage key={index} chat={chat} />
             ))}
