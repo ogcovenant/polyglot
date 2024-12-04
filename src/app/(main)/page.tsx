@@ -13,7 +13,7 @@ import { chat } from "@/actions/chat";
 // import axios from "axios";
 import ChatMessage from "@/components/ChatMessage";// Extracted component
 import ChatInput from "@/components/ChatInput"; // Extracted component
-import { venice } from "@/utils/venice.utils";
+// import { venice } from "@/utils/venice.utils";
 
 const Page = () => {
   const { sidebarOpen, toggleSidebar } = useSidebarCtx();
