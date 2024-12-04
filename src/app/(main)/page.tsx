@@ -7,37 +7,76 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import { getModels } from "@/actions/models";
 import { chat } from "@/actions/chat";
-import { venice } from "@/utils/venice.utils";
+import axios from "axios";
+import ChatMessage from "@/components/ChatMessage";// Extracted component
+import ChatInput from "@/components/ChatInput"; // Extracted component
 
 const Page = () => {
   const { sidebarOpen, toggleSidebar } = useSidebarCtx();
   const [models, setModels] = useState([]);
-  const [currentModel, setCurrentModel] = useState("")
-  const [chatInput, setChatInput] = useState("")
+  const [currentModel, setCurrentModel] = useState("");
+  const [chatInput, setChatInput] = useState("");
+  const [chatInterface, setChatInterface] = useState(false);
+  const [chooseModel, setChooseModel] = useState(false);
+  const [chats, setChats] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     (async () => {
-      const res = await getModels();
-      setModels(res.filter((model: any) => model.type === "text"));
+      try {
+        const res = await getModels();
+        const textModels = res.filter((model: any) => model.type === "text");
+        setModels(textModels);
+        if (textModels.length > 0) setCurrentModel(textModels[0].id);
+      } catch (error) {
+        console.error("Error fetching models:", error);
+      }
     })();
-  }, []); 
+  }, []);
 
-  useEffect(() => {
-    console.log(models);
-  }, [models]);
+  const getChats = async () => {
+    try {
+      const res = await axios.get("/api/chat?conversationId=456"); // Replace with your endpoint
+      setChats(res.data || []);
+    } catch (error) {
+      console.error("Error fetching chats:", error);
+    }
+  };
 
-  const startChat = async(message: string) => {
-    console.log(currentModel, venice.apiKey, venice.baseUrl)
-    const completion = await chat(message, currentModel)
+  const startChat = async (message: string) => {
+    if (!message.trim()) return;
 
-    console.log(completion)
-  }
+    try {
+      setLoading(true);
+
+      // Simulate a server response for AI completion
+      const completion = await chat(message, currentModel);
+
+      console.log(completion)
+
+      //@ts-ignore
+      setChats((prevChats) => [
+        //@ts-ignore
+        ...prevChats,
+        //@ts-ignore
+        { message, reply: completion.content },
+      ]);
+
+      setChatInterface(true);
+      setChatInput("");
+    } catch (error) {
+      console.error("Error sending chat:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="bg-black h-full p-2">
+      {/* Sidebar toggle for mobile */}
       <div className="lg:hidden bg-black p-5 rounded-lg flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Flash size="32" color="#FFF" variant="Bold" />
@@ -46,15 +85,15 @@ const Page = () => {
         <HambergerMenu
           size="32"
           color="#FFF"
-          onClick={() => {
-            toggleSidebar(!sidebarOpen);
-          }}
+          onClick={() => toggleSidebar(!sidebarOpen)}
         />
       </div>
 
+      {/* Main chat UI */}
       <div className="relative bg-gradient-to-br from-primary/35 to-secondary/35 w-full h-full rounded-lg flex flex-col items-center justify-center">
+        {/* Model Selection */}
         <div className="absolute top-3 left-5">
-          <Popover>
+          <Popover open={chooseModel}>
             <PopoverTrigger className="bg-primary text-white p-3 flex items-center rounded-md gap-2">
               <p>Model</p>
               <ArrowDown2 size="26" color="#FFF" />
@@ -62,9 +101,17 @@ const Page = () => {
             <PopoverContent className="bg-primary border-black">
               <ul>
                 {models.map((model) => (
-                  // @ts-ignore
-                  <li className="text-white p-3 rounded-md hover:bg-[#424242] cursor-pointer" key={model.id} onClick={() => setCurrentModel(model.id)}>
-                    {/* @ts-ignore */}
+                  <li
+                    className="text-white p-3 rounded-md hover:bg-[#424242] cursor-pointer"
+                    //@ts-ignore
+                    key={model.id}
+                    onClick={() => {
+                      //@ts-ignore
+                      setCurrentModel(model.id);
+                      setChooseModel(false);
+                    }}
+                  >
+                    //@ts-ignore
                     {model.id}
                   </li>
                 ))}
@@ -73,26 +120,35 @@ const Page = () => {
           </Popover>
         </div>
 
-        <h1 className="text-3xl md:text-5xl text-white font-semibold">
-          Welcome to Polyglot
-        </h1>
-        <p className="text-white mt-3">
-          The Power of AI at your service - Tame the knowledge
-        </p>
-        <div className="mt-3 flex items-center bg-primary w-[90%] lg:w-[50%] p-2 rounded-md gap-1 border-[1px]">
-          <input
-            type="text"
-            name="prompt"
-            id="prompt"
-            className="bg-transparent p-2 w-[80%] md:w-[90%] outline-none text-white"
-            placeholder="What do you need help with"
-            value={chatInput}
-            onChange={(e) => setChatInput(e.target.value)}
-          />
-          <button className="w-[20%] md:w-[10%] bg-secondary flex justify-center rounded-lg p-2" onClick={() => startChat(chatInput)}>
-            <Send size="26" color="#FFF" />
-          </button>
-        </div>
+        {/* Chat Interface */}
+        {!chatInterface ? (
+          <div className="flex flex-col items-center">
+            <h1 className="text-3xl md:text-5xl text-white font-semibold">
+              Welcome to Polyglot
+            </h1>
+            <p className="text-white mt-3">
+              The Power of AI at your service - Tame the knowledge
+            </p>
+            <ChatInput
+              chatInput={chatInput}
+              setChatInput={setChatInput}
+              onSend={() => startChat(chatInput)}
+              loading={loading}
+            />
+          </div>
+        ) : (
+          <div className="w-full h-full overflow-auto bg-black p-5 rounded-md mt-24">
+            {chats.map((chat, index) => (
+              <ChatMessage key={index} chat={chat} />
+            ))}
+            <ChatInput
+              chatInput={chatInput}
+              setChatInput={setChatInput}
+              onSend={() => startChat(chatInput)}
+              loading={loading}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

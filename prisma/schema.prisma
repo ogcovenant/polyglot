@@ -14,25 +14,27 @@ datasource db {
 }
 
 model User {
-  id            String         @id @default(cuid())
-  email         String         @unique
-  password      String
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  conversations Conversation[] @relation("UserConversations")
-  messages      Message[]
+  id           String         @id @default(cuid())
+  email        String         @unique
+  password     String
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  messages     Message[]
+  Conversation Conversation[]
 }
 
 model Conversation {
-  id           String    @id @default(cuid())
-  participants User[]    @relation("UserConversations")
-  messages     Message[]
-  createdAt    DateTime  @default(now())
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+  messages  Message[]
+  createdAt DateTime  @default(now())
 }
 
 model Message {
   id             String       @id @default(cuid())
   content        String
+  aiResponse     String
   senderId       String
   sender         User         @relation(fields: [senderId], references: [id])
   conversationId String

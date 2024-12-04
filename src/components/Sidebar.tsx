@@ -63,13 +63,11 @@ const Sidebar = () => {
           )}
           {loginDialogOpen ? (
             <Dialog>
-              <DialogTrigger className="w-full">
-                <button className="flex items-center gap-3 bg-secondary p-3 w-full rounded-lg">
-                  <Add size="32" color="#FFF" />
-                  <p className="text-white text-lg font-medium">
-                    Start a new chat
-                  </p>
-                </button>
+              <DialogTrigger className="w-full flex items-center gap-3 bg-secondary p-3 rounded-lg">
+                <Add size="32" color="#FFF" />
+                <p className="text-white text-lg font-medium">
+                  Start a new chat
+                </p>
               </DialogTrigger>
               <DialogContent className="bg-primary text-white">
                 <DialogHeader>
