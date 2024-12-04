@@ -15,6 +15,7 @@ import ChatMessage from "@/components/ChatMessage"; // Extracted component
 import ChatInput from "@/components/ChatInput"; // Extracted component
 import useChatStore from "@/states/chatStore";
 // import { venice } from "@/utils/venice.utils";
+import { useRef } from "react";
 
 const Page = () => {
   const { sidebarOpen, toggleSidebar } = useSidebarCtx();
@@ -26,6 +27,7 @@ const Page = () => {
   const [loading, setLoading] = useState(false);
 
   const { chats: allChats, addChat } = useChatStore();
+  const lastMessageRef = useRef<HTMLDivElement | null>(null); // Ref for the last message
 
   useEffect(() => {
     (async () => {
@@ -39,24 +41,18 @@ const Page = () => {
         console.error("Error fetching models:", error);
       }
     })();
-
-    // console.log(venice.apiKey)
   }, []);
-
-  // const getChats = async () => {
-  //   try {
-  //     const res = await axios.get("/api/chat?conversationId=456"); // Replace with your endpoint
-  //     setChats(res.data || []);
-  //   } catch (error) {
-  //     console.error("Error fetching chats:", error);
-  //   }
-  // };
 
   useEffect(() => {
     if (allChats.length > 0) {
       setChatInterface(true);
+      // Scroll to the last message
+      lastMessageRef.current?.scrollIntoView({
+        behavior: "smooth",
+      });
     }
-  }, [allChats]);
+  }, [allChats]); // Trigger scroll when chats change
+
   const startChat = async (message: string) => {
     if (!message.trim()) return;
 
@@ -70,29 +66,17 @@ const Page = () => {
         message,
         currentModel
       );
-      
-
-      // console.log(completion);
 
       const end = performance.now();
       const timeTaken = end - start;
 
-      addChat({ message, reply: completion.content as string, timeTaken: String(timeTaken) });
+      addChat({
+        message,
+        reply: completion.content as string,
+        timeTaken: String(timeTaken),
+      });
 
-      const element = document.getElementById((completion.content || "")+timeTaken);
-  element?.scrollIntoView({
-    behavior: 'smooth'
-  }); 
-    
-      // setChats((prevChats) => [
-      //   ...prevChats,
-      //   { message, reply: completion.content },
-      // ]);
-
-      setChatInterface(true);
-      setChatInput("");
-
-      console.log(`Time taken to fetch data: ${end - start} ms`);
+      console.log(`Time taken to fetch data: ${timeTaken} ms`);
     } catch (error) {
       console.error("Error sending chat:", error);
     } finally {
@@ -126,45 +110,6 @@ const Page = () => {
 
       {/* Main chat UI */}
       <div className="relative bg-gradient-to-br from-primary/35 to-secondary/35 w-full h-full rounded-lg flex flex-col items-center justify-center">
-        {/* Model Selection */}
-        <div className="absolute top-3 left-5 z-10">
-          <Popover open={chooseModel}>
-            <PopoverTrigger
-              className="bg-primary text-white p-3 flex items-center rounded-md gap-2"
-              onClick={() => setChooseModel(!chooseModel)}
-            >
-              <p>{currentModel}</p>
-              <ArrowDown2 size="26" color="#FFF" />
-            </PopoverTrigger>
-            <PopoverContent
-              className="bg-primary border-black"
-              onPointerDownOutside={() => setChooseModel(false)}
-            >
-              <ul>
-                {models.map((model) => (
-                  <li
-                  className={`text-white p-3 rounded-md hover:bg-[#424242] cursor-pointer ${
-                    //@ts-expect-error error
-                      currentModel === model.id && "bg-black"
-                    }`}
-                    //@ts-expect-error error
-                    key={model.id}
-                    onClick={() => {
-                      //@ts-expect-error error
-                      setCurrentModel(model.id);
-                      setChooseModel(false);
-                    }}
-                  >
-                    {/* @ts-expect-error error */}
-                    {model.id}
-                  </li>
-                ))}
-              </ul>
-            </PopoverContent>
-          </Popover>
-        </div>
-
-        {/* Chat Interface */}
         {!chatInterface ? (
           <div className="flex flex-col items-center">
             <h1 className="text-3xl md:text-5xl text-white font-semibold">
@@ -185,21 +130,22 @@ const Page = () => {
           <div className="w-full h-full overflow-auto bg-black p-5 rounded-md relative">
             <div className="mt-24"></div>
             <div className="mb-36">
-            {allChats.map((chat, index) => (
-            <div id={chat.reply+chat.timeTaken} key={index}>
-              <ChatMessage key={index} chat={chat} />
-            </div>
-              
-            ))}
+              {allChats.map((chat, index) => (
+                <ChatMessage
+                  key={index}
+                  chat={chat}
+                  ref={index === allChats.length - 1 ? lastMessageRef : null}
+                />
+              ))}
             </div>
             <div className="fixed bottom-4 w-[90%] md:w-[95%] lg:w-[63%] xl:w-[73%] flex justify-center">
-            <ChatInput
-              chatInput={chatInput}
-              setChatInput={setChatInput}
-              onSend={() => startChat(chatInput)}
-              loading={loading}
-              handleKeyDown={handleKeyDown}
-            />
+              <ChatInput
+                chatInput={chatInput}
+                setChatInput={setChatInput}
+                onSend={() => startChat(chatInput)}
+                loading={loading}
+                handleKeyDown={handleKeyDown}
+              />
             </div>
           </div>
         )}
