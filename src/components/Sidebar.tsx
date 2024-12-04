@@ -24,6 +24,7 @@ const Sidebar = () => {
   const user = useUserStore((state) => state.user);
   const clearUser = useUserStore((state) => state.clearUser);
   const clearChat = useChatStore((state) => state.clearChats);
+  const chats = useChatStore((state) => state.chats);
 
   // useEffect(() => {
   //   if (!user?.token) {
@@ -43,13 +44,15 @@ const Sidebar = () => {
             <Flash size="32" color="#FFF" variant="Bold" />
             <p className="text-white text-xl font-semibold">Polyglot</p>
           </div>
-          <button
-            className="w-full flex items-center gap-3 bg-secondary p-3 rounded-lg mt-3"
-            onClick={() => clearChat()}
-          >
-            <Add size="32" color="#FFF" />
-            <p className="text-white text-lg font-medium">Clear all Chats</p>
-          </button>
+          {chats.length > 0 && (
+            <button
+              className="w-full flex items-center gap-3 bg-secondary p-3 rounded-lg mt-3"
+              onClick={() => clearChat()}
+            >
+              <Add size="32" color="#FFF" />
+              <p className="text-white text-lg font-medium">Clear all Chats</p>
+            </button>
+          )}
         </div>
         <div className="border-t-[1px] border-gray-600 p-3">
           {user?.token ? (
@@ -94,13 +97,17 @@ const Sidebar = () => {
                 }}
               />
             </div>
-            <button
-              className="w-full flex items-center gap-3 bg-secondary p-3 rounded-lg mt-3"
-              onClick={() => clearChat()}
-            >
-              <Add size="32" color="#FFF" />
-              <p className="text-white text-lg font-medium">Clear all Chats</p>
-            </button>
+            {chats.length > 0 && (
+              <button
+                className="w-full flex items-center gap-3 bg-secondary p-3 rounded-lg mt-3"
+                onClick={() => clearChat()}
+              >
+                <Add size="32" color="#FFF" />
+                <p className="text-white text-lg font-medium">
+                  Clear all Chats
+                </p>
+              </button>
+            )}
           </div>
 
           <div className="border-t-[1px] border-gray-600 p-3">
