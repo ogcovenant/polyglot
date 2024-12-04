@@ -15,6 +15,7 @@ import ChatMessage from "@/components/ChatMessage"; // Extracted component
 import ChatInput from "@/components/ChatInput"; // Extracted component
 import useChatStore from "@/states/chatStore";
 // import { venice } from "@/utils/venice.utils";
+
 import { useRef } from "react";
 
 const Page = () => {
@@ -110,6 +111,45 @@ const Page = () => {
 
       {/* Main chat UI */}
       <div className="relative bg-gradient-to-br from-primary/35 to-secondary/35 w-full h-full rounded-lg flex flex-col items-center justify-center">
+        {/* Model Selection */}
+        <div className="absolute top-3 left-5 z-10">
+          <Popover open={chooseModel}>
+            <PopoverTrigger
+              className="bg-primary text-white p-3 flex items-center rounded-md gap-2"
+              onClick={() => setChooseModel(!chooseModel)}
+            >
+              <p>{currentModel}</p>
+              <ArrowDown2 size="26" color="#FFF" />
+            </PopoverTrigger>
+            <PopoverContent
+              className="bg-primary border-black"
+              onPointerDownOutside={() => setChooseModel(false)}
+            >
+              <ul>
+                {models.map((model) => (
+                  <li
+                    className={`text-white p-3 rounded-md hover:bg-[#424242] cursor-pointer ${
+                      //@ts-expect-error error
+                      currentModel === model.id && "bg-black"
+                    }`}
+                    //@ts-expect-error error
+                    key={model.id}
+                    onClick={() => {
+                      //@ts-expect-error error
+                      setCurrentModel(model.id);
+                      setChooseModel(false);
+                    }}
+                  >
+                    {/* @ts-expect-error error */}
+                    {model.id}
+                  </li>
+                ))}
+              </ul>
+            </PopoverContent>
+          </Popover>
+        </div>
+
+        {/* Chat Interface */}
         {!chatInterface ? (
           <div className="flex flex-col items-center">
             <h1 className="text-3xl md:text-5xl text-white font-semibold">
@@ -134,7 +174,7 @@ const Page = () => {
                 <ChatMessage
                   key={index}
                   chat={chat}
-                  ref={index === allChats.length - 1 ? lastMessageRef : null}
+                  ref={index === allChats.length - 1 ? lastMessageRef : null} // Set ref to the last message
                 />
               ))}
             </div>
