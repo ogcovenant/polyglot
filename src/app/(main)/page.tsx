@@ -186,7 +186,7 @@ const Page = () => {
             <div className="mt-24"></div>
             <div className="mb-36">
             {allChats.map((chat, index) => (
-            <div id={chat.reply+chat.timeTaken}>
+            <div id={chat.reply+chat.timeTaken} key={index}>
               <ChatMessage key={index} chat={chat} />
             </div>
               
