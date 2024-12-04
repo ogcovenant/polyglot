@@ -79,7 +79,7 @@ const Page = () => {
 
       addChat({ message, reply: completion.content as string, timeTaken: String(timeTaken) });
 
-      const element = document.getElementById(completion.content+timeTaken);
+      const element = document.getElementById((completion.content || "")+timeTaken);
   element?.scrollIntoView({
     behavior: 'smooth'
   }); 
