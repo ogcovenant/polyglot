@@ -39,7 +39,7 @@ const Page = () => {
     })();
 
 
-    console.log(venice.apiKey)
+    // console.log(venice.apiKey)
   }, []);
 
   // const getChats = async () => {
@@ -97,7 +97,7 @@ const Page = () => {
         {/* Model Selection */}
         <div className="absolute top-3 left-5">
           <Popover open={chooseModel}>
-            <PopoverTrigger className="bg-primary text-white p-3 flex items-center rounded-md gap-2">
+            <PopoverTrigger className="bg-primary text-white p-3 flex items-center rounded-md gap-2" onClick={() => setChooseModel(!chooseModel)}>
               <p>Model</p>
               <ArrowDown2 size="26" color="#FFF" />
             </PopoverTrigger>
@@ -105,7 +105,8 @@ const Page = () => {
               <ul>
                 {models.map((model) => (
                   <li
-                    className="text-white p-3 rounded-md hover:bg-[#424242] cursor-pointer"
+                  //@ts-expect-error error
+                    className={`text-white p-3 rounded-md hover:bg-[#424242] cursor-pointer ${currentModel === model.id && "bg-black"}`}
                     //@ts-expect-error error
                     key={model.id}
                     onClick={() => {

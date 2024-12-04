@@ -26,7 +26,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
         disabled={loading}
       />
       <button
-        className="bg-secondary flex justify-center rounded-lg p-2"
+        className="bg-secondary flex justify-center rounded-lg p-2 w-[10%]"
         onClick={onSend}
         disabled={loading}
       >
