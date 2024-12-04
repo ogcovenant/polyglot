@@ -5,6 +5,7 @@ interface ChatMessageProps {
   chat: {
     message: string;
     reply: string;
+    timeTaken: string
   };
 }
 
@@ -20,6 +21,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ chat }) => {
         <p className="text-lg font-bold">Polyglot:</p>
         <div>
           <Markdown remarkPlugins={[remarkGfm]} className={"whitespace-break-spaces"}>{`${chat.reply}`}</Markdown>
+          <p className="mt-3 text-xs text-gray-600">Response Time: {chat.timeTaken} ms</p>
         </div>
       </div>
     </div>

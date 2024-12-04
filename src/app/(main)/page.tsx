@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import { getModels } from "@/actions/models";
 import { chat } from "@/actions/chat";
 // import axios from "axios";
-import ChatMessage from "@/components/ChatMessage";// Extracted component
+import ChatMessage from "@/components/ChatMessage"; // Extracted component
 import ChatInput from "@/components/ChatInput"; // Extracted component
 import useChatStore from "@/states/chatStore";
 // import { venice } from "@/utils/venice.utils";
@@ -40,7 +40,6 @@ const Page = () => {
       }
     })();
 
-
     // console.log(venice.apiKey)
   }, []);
 
@@ -53,32 +52,41 @@ const Page = () => {
   //   }
   // };
 
-
-  useEffect(() =>{
-    if(allChats.length > 0){
-      setChatInterface(true)
+  useEffect(() => {
+    if (allChats.length > 0) {
+      setChatInterface(true);
     }
-  }, [allChats])
+  }, [allChats]);
   const startChat = async (message: string) => {
     if (!message.trim()) return;
 
     try {
       setLoading(true);
+      const start = performance.now();
 
       // Simulate a server response for AI completion
-      const completion = await chat( JSON.stringify(allChats) ,message, currentModel);
+      const completion = await chat(
+        JSON.stringify(allChats),
+        message,
+        currentModel
+      );
 
-      console.log(completion)
+      // console.log(completion);
 
-      addChat({ message, reply: completion.content as string });
-      //@ts-expect-error error
-      setChats((prevChats) => [
-        ...prevChats,
-        { message, reply: completion.content },
-      ]);
+      const end = performance.now();
+      const timeTaken = end - start;
+
+      addChat({ message, reply: completion.content as string, timeTaken: String(timeTaken) });
+      
+      // setChats((prevChats) => [
+      //   ...prevChats,
+      //   { message, reply: completion.content },
+      // ]);
 
       setChatInterface(true);
       setChatInput("");
+
+      console.log(`Time taken to fetch data: ${end - start} ms`);
     } catch (error) {
       console.error("Error sending chat:", error);
     } finally {
@@ -115,16 +123,24 @@ const Page = () => {
         {/* Model Selection */}
         <div className="absolute top-3 left-5">
           <Popover open={chooseModel}>
-            <PopoverTrigger className="bg-primary text-white p-3 flex items-center rounded-md gap-2" onClick={() => setChooseModel(!chooseModel)}>
+            <PopoverTrigger
+              className="bg-primary text-white p-3 flex items-center rounded-md gap-2"
+              onClick={() => setChooseModel(!chooseModel)}
+            >
               <p>{currentModel}</p>
               <ArrowDown2 size="26" color="#FFF" />
             </PopoverTrigger>
-            <PopoverContent className="bg-primary border-black" onPointerDownOutside={() => setChooseModel(false)}>
+            <PopoverContent
+              className="bg-primary border-black"
+              onPointerDownOutside={() => setChooseModel(false)}
+            >
               <ul>
                 {models.map((model) => (
                   <li
-                  //@ts-expect-error error
-                    className={`text-white p-3 rounded-md hover:bg-[#424242] cursor-pointer ${currentModel === model.id && "bg-black"}`}
+                  className={`text-white p-3 rounded-md hover:bg-[#424242] cursor-pointer ${
+                    //@ts-expect-error error
+                      currentModel === model.id && "bg-black"
+                    }`}
                     //@ts-expect-error error
                     key={model.id}
                     onClick={() => {

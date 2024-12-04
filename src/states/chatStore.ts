@@ -4,11 +4,12 @@ import { persist } from "zustand/middleware";
 interface CHAT {
   message: string;
   reply: string;
+  timeTaken: string;
 }
 
 interface ChatStore {
   chats: CHAT[];
-  addChat: (chat: CHAT) => void;
+  addChat: (chat: Omit<CHAT, "timeTaken"> & { timeTaken: string }) => void; // Proper type for adding a chat
   clearChats: () => void;
 }
 
@@ -16,15 +17,15 @@ const useChatStore = create<ChatStore>()(
   persist(
     (set) => ({
       chats: [], // Initialize from local storage
-      addChat: (chat) => {
+      addChat: ({ timeTaken, message, reply }) => {
+        // Add timeTaken, message, and reply to the state
         set((state) => {
-          const updatedChats = [...state.chats, chat];
-        //   localStorage.setItem("chats", JSON.stringify(updatedChats)); // Save to local storage
+          const updatedChats = [...state.chats, { message, reply, timeTaken }];
           return { chats: updatedChats };
         });
       },
       clearChats: () => {
-        // localStorage.removeItem("chats"); // Clear local storage
+        // Clears the chats state and syncs with local storage
         set({ chats: [] });
       },
     }),
