@@ -82,7 +82,16 @@ const Page = () => {
     } catch (error) {
       console.error("Error sending chat:", error);
     } finally {
+      setChatInput("");
       setLoading(false);
+    }
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault(); // Prevent new line if Shift is not pressed
+      startChat(chatInput); // Trigger the action (e.g., send chat)
+      setChatInput(""); // Clear the input after sending
     }
   };
 
@@ -107,10 +116,10 @@ const Page = () => {
         <div className="absolute top-3 left-5">
           <Popover open={chooseModel}>
             <PopoverTrigger className="bg-primary text-white p-3 flex items-center rounded-md gap-2" onClick={() => setChooseModel(!chooseModel)}>
-              <p>Model</p>
+              <p>{currentModel}</p>
               <ArrowDown2 size="26" color="#FFF" />
             </PopoverTrigger>
-            <PopoverContent className="bg-primary border-black">
+            <PopoverContent className="bg-primary border-black" onPointerDownOutside={() => setChooseModel(false)}>
               <ul>
                 {models.map((model) => (
                   <li
@@ -147,6 +156,7 @@ const Page = () => {
               setChatInput={setChatInput}
               onSend={() => startChat(chatInput)}
               loading={loading}
+              handleKeyDown={handleKeyDown}
             />
           </div>
         ) : (
@@ -160,6 +170,7 @@ const Page = () => {
               setChatInput={setChatInput}
               onSend={() => startChat(chatInput)}
               loading={loading}
+              handleKeyDown={handleKeyDown}
             />
           </div>
         )}

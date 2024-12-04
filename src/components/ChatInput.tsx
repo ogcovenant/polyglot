@@ -1,10 +1,12 @@
 import { Send } from "iconsax-react";
+import React from "react";
 
 interface ChatInputProps {
   chatInput: string;
   setChatInput: (value: string) => void;
   onSend: () => void;
   loading: boolean;
+  handleKeyDown: (event: React.KeyboardEvent) => void
 }
 
 const ChatInput: React.FC<ChatInputProps> = ({
@@ -12,6 +14,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
   setChatInput,
   onSend,
   loading,
+  handleKeyDown
 }) => {
   return (
     <div className="mt-3 flex items-center bg-primary w-full p-2 rounded-md gap-1 border-[1px]">
@@ -24,6 +27,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
         value={chatInput}
         onChange={(e) => setChatInput(e.target.value)}
         disabled={loading}
+        onKeyDown={handleKeyDown}
       />
       <button
         className="bg-secondary flex justify-center rounded-lg p-2 w-[10%]"

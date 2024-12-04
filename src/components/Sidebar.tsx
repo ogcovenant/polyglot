@@ -44,7 +44,7 @@ const Sidebar = () => {
             <p className="text-white text-xl font-semibold">Polyglot</p>
           </div>
           <button
-            className="w-full flex items-center gap-3 bg-secondary p-3 rounded-lg"
+            className="w-full flex items-center gap-3 bg-secondary p-3 rounded-lg mt-3"
             onClick={() => clearChat()}
           >
             <Add size="32" color="#FFF" />
@@ -95,7 +95,7 @@ const Sidebar = () => {
               />
             </div>
             <button
-              className="w-full flex items-center gap-3 bg-secondary p-3 rounded-lg"
+              className="w-full flex items-center gap-3 bg-secondary p-3 rounded-lg mt-3"
               onClick={() => clearChat()}
             >
               <Add size="32" color="#FFF" />
