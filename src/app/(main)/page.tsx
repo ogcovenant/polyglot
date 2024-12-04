@@ -70,6 +70,7 @@ const Page = () => {
         message,
         currentModel
       );
+      
 
       // console.log(completion);
 
@@ -77,7 +78,12 @@ const Page = () => {
       const timeTaken = end - start;
 
       addChat({ message, reply: completion.content as string, timeTaken: String(timeTaken) });
-      
+
+      const element = document.getElementById(completion.content+timeTaken);
+  element?.scrollIntoView({
+    behavior: 'smooth'
+  }); 
+    }
       // setChats((prevChats) => [
       //   ...prevChats,
       //   { message, reply: completion.content },
@@ -180,7 +186,10 @@ const Page = () => {
             <div className="mt-24"></div>
             <div className="mb-36">
             {allChats.map((chat, index) => (
+            <div id={chat.reply+chat.timeTaken}>
               <ChatMessage key={index} chat={chat} />
+            </div>
+              
             ))}
             </div>
             <div className="fixed bottom-4 w-[90%] md:w-[95%] lg:w-[63%] xl:w-[73%] flex justify-center">
