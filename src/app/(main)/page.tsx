@@ -37,14 +37,14 @@ const Page = () => {
     })();
   }, []);
 
-  const getChats = async () => {
-    try {
-      const res = await axios.get("/api/chat?conversationId=456"); // Replace with your endpoint
-      setChats(res.data || []);
-    } catch (error) {
-      console.error("Error fetching chats:", error);
-    }
-  };
+  // const getChats = async () => {
+  //   try {
+  //     const res = await axios.get("/api/chat?conversationId=456"); // Replace with your endpoint
+  //     setChats(res.data || []);
+  //   } catch (error) {
+  //     console.error("Error fetching chats:", error);
+  //   }
+  // };
 
   const startChat = async (message: string) => {
     if (!message.trim()) return;
