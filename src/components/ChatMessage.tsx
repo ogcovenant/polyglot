@@ -29,7 +29,7 @@ const ChatMessage = forwardRef<HTMLDivElement, ChatMessageProps>(
           <div className="w-full overflow-auto">
             <Markdown
               remarkPlugins={[remarkGfm]}
-              className="w-full whitespace-pre "
+              className="w-full"
             >
               {chat.reply}
             </Markdown>
