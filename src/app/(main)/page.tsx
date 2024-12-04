@@ -28,7 +28,7 @@ const Page = () => {
     (async () => {
       try {
         const res = await getModels();
-        //@ts-ignore
+        //@ts-expect-error error
         const textModels = res.filter((model) => model.type === "text");
         setModels(textModels);
         if (textModels.length > 0) setCurrentModel(textModels[0].id);
