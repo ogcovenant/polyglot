@@ -121,7 +121,7 @@ const Page = () => {
       {/* Main chat UI */}
       <div className="relative bg-gradient-to-br from-primary/35 to-secondary/35 w-full h-full rounded-lg flex flex-col items-center justify-center">
         {/* Model Selection */}
-        <div className="absolute top-3 left-5">
+        <div className="absolute top-3 left-5 z-10">
           <Popover open={chooseModel}>
             <PopoverTrigger
               className="bg-primary text-white p-3 flex items-center rounded-md gap-2"
@@ -176,11 +176,14 @@ const Page = () => {
             />
           </div>
         ) : (
-          <div className="w-full h-full overflow-auto bg-black p-5 rounded-md">
+          <div className="w-full h-full overflow-auto bg-black p-5 rounded-md relative">
             <div className="mt-24"></div>
+            <div className="mb-36">
             {allChats.map((chat, index) => (
               <ChatMessage key={index} chat={chat} />
             ))}
+            </div>
+            <div className="fixed bottom-4 w-[90%] md:w-[95%] lg:w-[63%] xl:w-[73%] flex justify-center">
             <ChatInput
               chatInput={chatInput}
               setChatInput={setChatInput}
@@ -188,6 +191,7 @@ const Page = () => {
               loading={loading}
               handleKeyDown={handleKeyDown}
             />
+            </div>
           </div>
         )}
       </div>
