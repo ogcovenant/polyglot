@@ -13,6 +13,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
+import useChatStore from "@/states/chatStore";
 // import { useRouter } from "next/navigation";
 
 const Sidebar = () => {
@@ -22,6 +23,7 @@ const Sidebar = () => {
 
   const user = useUserStore((state) => state.user);
   const clearUser = useUserStore((state) => state.clearUser);
+  const clearChat = useChatStore((state) => state.clearChats);
 
   useEffect(() => {
     if (!user?.token) {
@@ -41,65 +43,13 @@ const Sidebar = () => {
             <Flash size="32" color="#FFF" variant="Bold" />
             <p className="text-white text-xl font-semibold">Polyglot</p>
           </div>
-          {user?.token ? (
-            <div className="mt-3 p-3 flex flex-col gap-3">
-              <div className="flex items-center text-white gap-2 cursor-pointer p-2">
-                <MessageText1 size="22" color="#FFF" />
-                <p>How to center a div</p>
-              </div>
-              <div className="flex items-center text-white gap-2 cursor-pointer p-2">
-                <MessageText1 size="22" color="#FFF" />
-                <p>Web Accessiibilty</p>
-              </div>
-              <div className="flex items-center text-white gap-2 cursor-pointer p-2">
-                <MessageText1 size="22" color="#FFF" />
-                <p>Design Inspiration</p>
-              </div>
-            </div>
-          ) : (
-            <div className="p-3 text-white">
-              You need to have an account to be able to save chat history
-            </div>
-          )}
-          {loginDialogOpen ? (
-            <Dialog>
-              <DialogTrigger className="w-full flex items-center gap-3 bg-secondary p-3 rounded-lg">
-                <Add size="32" color="#FFF" />
-                <p className="text-white text-lg font-medium">
-                  Start a new chat
-                </p>
-              </DialogTrigger>
-              <DialogContent className="bg-primary text-white">
-                <DialogHeader>
-                  <DialogTitle>Clear current chat?</DialogTitle>
-                  <DialogDescription>
-                    To start a new chat, your current conversation will be
-                    discarded. Sign up or log in to save chats.
-                  </DialogDescription>
-                </DialogHeader>
-                <div>
-                  <button className="flex items-center gap-1 text-white text-lg bg-red-500 font-semibold w-full p-3 rounded-lg justify-center">
-                    <p className="text-lg text-center">Clear Chat</p>
-                  </button>
-                  <Link href={"/login"}>
-                    <button className="flex items-center gap-1 text-white text-lg bg-secondary font-semibold w-full p-3 rounded-lg justify-center mt-1">
-                      <p className="text-lg text-center">Log in</p>
-                    </button>
-                  </Link>
-                  <Link href={"/register"}>
-                    <button className="flex items-center gap-1 text-secondary bg-white text-lg font-semibold w-full p-3 rounded-lg justify-center mt-1">
-                      <p className="text-lg">Register</p>
-                    </button>
-                  </Link>
-                </div>
-              </DialogContent>
-            </Dialog>
-          ) : (
-            <button className="flex items-center gap-3 bg-secondary p-3 w-full rounded-lg">
-              <Add size="32" color="#FFF" />
-              <p className="text-white text-lg font-medium">Start a new chat</p>
-            </button>
-          )}
+          <button
+            className="w-full flex items-center gap-3 bg-secondary p-3 rounded-lg"
+            onClick={() => clearChat()}
+          >
+            <Add size="32" color="#FFF" />
+            <p className="text-white text-lg font-medium">Clear all Chats</p>
+          </button>
         </div>
         <div className="border-t-[1px] border-gray-600 p-3">
           {user?.token ? (
@@ -144,69 +94,13 @@ const Sidebar = () => {
                 }}
               />
             </div>
-            {user?.token ? (
-              <div className="mt-3 p-3 flex flex-col gap-3">
-                <div className="flex items-center text-white gap-2 cursor-pointer p-2">
-                  <MessageText1 size="22" color="#FFF" />
-                  <p>How to center a div</p>
-                </div>
-                <div className="flex items-center text-white gap-2 cursor-pointer p-2">
-                  <MessageText1 size="22" color="#FFF" />
-                  <p>Web Accessiibilty</p>
-                </div>
-                <div className="flex items-center text-white gap-2 cursor-pointer p-2">
-                  <MessageText1 size="22" color="#FFF" />
-                  <p>Design Inspiration</p>
-                </div>
-              </div>
-            ) : (
-              <div className="p-3 text-white">
-                You need to have an account to be able to save chat history
-              </div>
-            )}
-            {loginDialogOpen ? (
-              <Dialog>
-                <DialogTrigger className="w-full">
-                  <button className="flex items-center gap-3 bg-secondary p-3 w-full rounded-lg">
-                    <Add size="32" color="#FFF" />
-                    <p className="text-white text-lg font-medium">
-                      Start a new chat
-                    </p>
-                  </button>
-                </DialogTrigger>
-                <DialogContent className="bg-primary text-white">
-                  <DialogHeader>
-                    <DialogTitle>Clear current chat?</DialogTitle>
-                    <DialogDescription>
-                      To start a new chat, your current conversation will be
-                      discarded. Sign up or log in to save chats.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div>
-                    <button className="flex items-center gap-1 text-white text-lg bg-red-500 font-semibold w-full p-3 rounded-lg justify-center">
-                      <p className="text-lg text-center">Clear Chat</p>
-                    </button>
-                    <Link href={"/login"}>
-                      <button className="flex items-center gap-1 text-white text-lg bg-secondary font-semibold w-full p-3 rounded-lg justify-center mt-1">
-                        <p className="text-lg text-center">Log in</p>
-                      </button>
-                    </Link>
-                    <Link href={"/register"}>
-                      <button className="flex items-center gap-1 text-secondary bg-white text-lg font-semibold w-full p-3 rounded-lg justify-center mt-1">
-                        <p className="text-lg">Register</p>
-                      </button>
-                    </Link>
-                  </div>
-                </DialogContent>
-              </Dialog>
-            ) : (
-              <button className="flex items-center gap-3 bg-secondary p-3 w-full rounded-lg">
-                <Add size="32" color="#FFF" />
-                <p className="text-white text-lg font-medium">
-                  Start a new chat
-                </p>
-              </button>
-            )}
+            <button
+              className="w-full flex items-center gap-3 bg-secondary p-3 rounded-lg"
+              onClick={() => clearChat()}
+            >
+              <Add size="32" color="#FFF" />
+              <p className="text-white text-lg font-medium">Clear all Chats</p>
+            </button>
           </div>
 
           <div className="border-t-[1px] border-gray-600 p-3">

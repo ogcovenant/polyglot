@@ -13,6 +13,7 @@ import { chat } from "@/actions/chat";
 // import axios from "axios";
 import ChatMessage from "@/components/ChatMessage";// Extracted component
 import ChatInput from "@/components/ChatInput"; // Extracted component
+import useChatStore from "@/states/chatStore";
 // import { venice } from "@/utils/venice.utils";
 
 const Page = () => {
@@ -22,8 +23,9 @@ const Page = () => {
   const [chatInput, setChatInput] = useState("");
   const [chatInterface, setChatInterface] = useState(false);
   const [chooseModel, setChooseModel] = useState(false);
-  const [chats, setChats] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const { chats: allChats, addChat } = useChatStore();
 
   useEffect(() => {
     (async () => {
@@ -51,6 +53,12 @@ const Page = () => {
   //   }
   // };
 
+
+  useEffect(() =>{
+    if(allChats.length > 0){
+      setChatInterface(true)
+    }
+  }, [allChats])
   const startChat = async (message: string) => {
     if (!message.trim()) return;
 
@@ -58,10 +66,11 @@ const Page = () => {
       setLoading(true);
 
       // Simulate a server response for AI completion
-      const completion = await chat(message, currentModel);
+      const completion = await chat( JSON.stringify(allChats) ,message, currentModel);
 
       console.log(completion)
 
+      addChat({ message, reply: completion.content as string });
       //@ts-expect-error error
       setChats((prevChats) => [
         ...prevChats,
@@ -143,7 +152,7 @@ const Page = () => {
         ) : (
           <div className="w-full h-full overflow-auto bg-black p-5 rounded-md">
             <div className="mt-24"></div>
-            {chats.map((chat, index) => (
+            {allChats.map((chat, index) => (
               <ChatMessage key={index} chat={chat} />
             ))}
             <ChatInput
