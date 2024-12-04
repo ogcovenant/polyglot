@@ -24,7 +24,7 @@ const ChatMessage = forwardRef<HTMLDivElement, ChatMessageProps>(
         </div>
 
         {/* AI reply */}
-        <div className="bg-primary mt-6 p-3 rounded-md w-fit self-end">
+        <div className="bg-primary mt-6 p-3 rounded-md w-[80%] md:w-fit  self-end">
           <p className="text-lg font-bold">Polyglot:</p>
           <div>
             <Markdown
