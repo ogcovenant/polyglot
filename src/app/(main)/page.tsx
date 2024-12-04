@@ -10,7 +10,7 @@ import {
 import { useEffect, useState } from "react";
 import { getModels } from "@/actions/models";
 import { chat } from "@/actions/chat";
-import axios from "axios";
+// import axios from "axios";
 import ChatMessage from "@/components/ChatMessage";// Extracted component
 import ChatInput from "@/components/ChatInput"; // Extracted component
 
@@ -28,7 +28,8 @@ const Page = () => {
     (async () => {
       try {
         const res = await getModels();
-        const textModels = res.filter((model: any) => model.type === "text");
+        //@ts-ignore
+        const textModels = res.filter((model) => model.type === "text");
         setModels(textModels);
         if (textModels.length > 0) setCurrentModel(textModels[0].id);
       } catch (error) {
