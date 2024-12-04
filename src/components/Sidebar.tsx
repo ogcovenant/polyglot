@@ -2,34 +2,34 @@
 
 import { useSidebarCtx } from "@/contexts/SidebarCtx";
 import useUserStore from "@/states/userStore";
-import { Add, CloseSquare, Flash, Logout, MessageText1 } from "iconsax-react";
+import { Add, CloseSquare, Flash, Logout } from "iconsax-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "./ui/dialog";
+// import {
+//   Dialog,
+//   DialogContent,
+//   DialogDescription,
+//   DialogHeader,
+//   DialogTitle,
+//   DialogTrigger,
+// } from "./ui/dialog";
 import useChatStore from "@/states/chatStore";
 // import { useRouter } from "next/navigation";
 
 const Sidebar = () => {
   const { sidebarOpen, toggleSidebar } = useSidebarCtx();
-  const [loginDialogOpen, setLoginDialogOpen] = useState(false);
+  // const [loginDialogOpen, setLoginDialogOpen] = useState(false);
   // const router = useRouter();
 
   const user = useUserStore((state) => state.user);
   const clearUser = useUserStore((state) => state.clearUser);
   const clearChat = useChatStore((state) => state.clearChats);
 
-  useEffect(() => {
-    if (!user?.token) {
-      setLoginDialogOpen(true);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (!user?.token) {
+  //     setLoginDialogOpen(true);
+  //   }
+  // }, []);
 
   const logout = () => {
     clearUser();
